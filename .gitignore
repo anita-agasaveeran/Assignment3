@@ -1,0 +1,14 @@
+# local environments, logs, caches
+.venvs/
+.logs/
+.DS_Store
+__pycache__/
+.ipynb_checkpoints/
+# instructor reference notebooks (inputs to scripts/prepare_notebooks.py, not my submissions)
+notebooks/
+# artefacts the notebooks write while running
+AutogluonModels/
+mlruns/
+catboost_info/
+logs.log
+*.pkl
