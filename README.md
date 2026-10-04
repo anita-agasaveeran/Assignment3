@@ -24,9 +24,28 @@ and a **Run environment** cell that prints where and when that copy was executed
 | 1 | 79 / 79 | 46 | 0 | 2.3 min | local Jupyter, Python 3.11, Apple M4 Pro |
 | 2 | 85 / 85 | 25 | 0 | 2.9 min | local Jupyter, Python 3.11, AutoGluon 1.6.3 |
 | 3 | 105 / 105 | 39 | 0 | 4.4 min | local Jupyter, Python 3.11, AutoGluon 1.6.3 |
-| 4 | _pending_ | | | | Google Colab T4 GPU run, in progress |
+| 4 | 120 / 120 | 40 | 0 | — | Google Colab, Tesla T4 GPU, Python 3.13, cuDF / cuML 26.06 |
 | 5 | 95 / 95 | 37 | 0 | 2.3 min | local Jupyter, Python 3.10, PyCaret 3.3.2 |
 | 6 | 136 / 136 | 47 | 0 | 1.9 min | local Jupyter, Python 3.10, PyCaret 3.3.2 |
+
+### Part 4 headline: RAPIDS on a T4 vs. the CPU (2 Colab vCPUs), from my run
+
+| Workload | CPU | GPU (T4) | Speed-up |
+|---|---:|---:|---:|
+| groupby-mean, 2.4 M rows (warm) | 126 ms | 12 ms | 10.3x |
+| same pandas script via `cudf.pandas` (work only) | 6.80 s | 0.21 s | 32.4x |
+| 7 EDA ops on 2.4 M rows (median) | | | 8.7x |
+| same EDA ops on 1,500 rows (median) | | | 0.07x (CPU wins) |
+| RandomForest fit, 150 k rows | 20.1 s | 0.64 s | 31.5x |
+| KNeighbors fit + predict, 150 k rows | 74.3 s | 0.80 s | 92.9x |
+| UMAP, 20 k rows | 28.8 s | 0.17 s | 169x |
+| DBSCAN, 10 k rows | 1.30 s | 0.011 s | 119x |
+| XGBoost fit, 120 k rows | 1.79 s | 0.42 s | 4.2x |
+| XGBoost SHAP, 50 k rows | 18.2 s | 0.93 s | 19.6x |
+
+The break-even point for a cuDF groupby on this GPU was about 100,000 rows; below that pandas is faster because of the
+GPU's fixed per-call cost. cuGraph was not preinstalled on this Colab image, so the graph section (Task 21) ran on
+NetworkX on the CPU; the `nx-cugraph` backend was present and is benchmarked in Task 24.3.
 
 ### Fixes I made to the reference notebooks so that they run cleanly
 
