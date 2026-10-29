@@ -49,7 +49,7 @@ NetworkX on the CPU; the `nx-cugraph` backend was present and is benchmarked in 
 
 ### Fixes I made to the reference notebooks so that they run cleanly
 
-Running the reference Colabs top to bottom surfaced a few bugs; each fix is recorded in `scripts/prepare_notebooks.py`.
+Running the reference Colabs top to bottom surfaced a few bugs, fixed in my copies:
 
 | Where | Problem in the reference | Fix |
 |---|---|---|
@@ -97,10 +97,10 @@ drift (PSI) monitoring, fairness check, error analysis and a diagnostics checkli
 
 ## How the notebooks were produced and run
 
-* The starting point for each part is the reference Colab linked in its header. `scripts/prepare_notebooks.py` builds
-  my copy from it: all reference outputs are cleared (so every output in the repo is from my run), install cells are
-  made Colab-aware, and the assignment header and run-environment cell are added.
-* Parts 1, 2, 3, 5 and 6 were executed top to bottom with `scripts/run_notebook.sh` (Jupyter `nbconvert --execute`) on
+* The starting point for each part is the reference Colab linked in its header. In my copy all reference outputs are
+  cleared (so every output in the repo is from my run), install cells are made Colab-aware, and the assignment header
+  and run-environment cell are added.
+* Parts 1, 2, 3, 5 and 6 were executed top to bottom with Jupyter (`nbconvert --execute`) on
   an Apple M4 Pro (14 cores, 24 GB). Part 4 needs an NVIDIA GPU and was executed on a Google Colab GPU runtime.
 * All data is synthetic or comes from scikit-learn built-ins and is generated inside the notebooks — nothing to download.
 
@@ -120,8 +120,8 @@ Click a badge above, then *Runtime → Run all*.
 ```bash
 uv venv .venvs/ag --python 3.11 && VIRTUAL_ENV=.venvs/ag uv pip install -r requirements/autogluon_kmeans.txt
 uv venv .venvs/pc --python 3.10 && VIRTUAL_ENV=.venvs/pc uv pip install -r requirements/pycaret.txt
-scripts/run_notebook.sh ag part1_kmeans/kmeans_and_variations.ipynb
-scripts/run_notebook.sh pc part5_pycaret_capabilities/pycaret_capabilities_tour.ipynb
+.venvs/ag/bin/jupyter nbconvert --to notebook --execute --inplace part1_kmeans/kmeans_and_variations.ipynb
+.venvs/pc/bin/jupyter nbconvert --to notebook --execute --inplace part5_pycaret_capabilities/pycaret_capabilities_tour.ipynb
 ```
 
 (PyCaret uses Python 3.10 locally on macOS because its `catboost<1.2` pin has no Python 3.11 wheel for Apple Silicon.)
@@ -137,6 +137,5 @@ scripts/run_notebook.sh pc part5_pycaret_capabilities/pycaret_capabilities_tour.
 ├── part4_rapids_vs_cpu/             rapids_vs_cpu.ipynb
 ├── part5_pycaret_capabilities/      pycaret_capabilities_tour.ipynb
 ├── part6_pycaret_mlops/             pycaret_mlops.ipynb
-├── requirements/                    pinned versions used for the local runs
-└── scripts/                         prepare_notebooks.py, run_notebook.sh
+└── requirements/                    pinned versions used for the local runs
 ```
